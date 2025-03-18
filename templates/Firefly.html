@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Background Video</title>
+    <ling rel="icon" href="{{ url_for('static', filename='favicon.ico') }}?v={{ timestamp }}" type="image/x-icon">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <!-- 导入Font Awesome库 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="{{ url_for('static', filename='js/FileDropPrevention.js') }}"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            // 页面加载完成后执行的代码
+            document.getElementById("page").style.display = "block";
+        });
+    </script>    
+</head>
+<body id="page">
+    <div class="video-background" id="background">
+        <video autoplay muted loop preload="auto" id="bg-video">
+            <source src="{{ url_for('static', filename='BackgroundAnimation.mp4') }}" type="video/mp4">
+            Your browser does not support the video tag.
+        </video>
+    </div>
+    <div id="particle"></div>
+    <div id="searching">
+        <div id="input" class="input_box">
+            <img id="icon" src="{{ url_for('static', filename='svg/bing.svg') }}" id="bing_icon" alt=""/>
+            <span id="separator"></span>
+            <input type="text" id="question" placeholder="{{ tip }}"/>
+            <button id="submit" class="submit">
+                <i class="submit_icon fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+    </div>
+    <div class="content" id="content">
+        <div id="text">
+            <div id="border">
+                <img src="{{ url_for('static', filename='svg/border-LeftTop.svg') }}" id="border_left" alt=""/>
+                <img src="{{ url_for('static', filename='svg/border-LeftTop.svg') }}" id="border_right" alt=""/>
+            </div>
+            <h1>
+                <span id="title">𝓞𝓷𝓬𝓮 𝓽𝓱𝓮 𝓖𝓵𝓪𝓶𝓸𝓽𝓱 𝓚𝓷𝓲𝓰𝓱𝓽, 𝓷𝓸𝔀 𝓽𝓱𝓮 𝓢𝓽𝓮𝓵𝓵𝓪𝓻 𝓗𝓾𝓷𝓽𝓮𝓻.</span>
+            </h1>
+            <div>
+                <p class="ref">
+                    <span class="ref" id="ref">AR-26710 : Firefly</span>
+                </p>
+                <time id="time" datetime="00:00:00">
+                    - <span id="hours">00</span>:<span id="minutes">00</span>:<span id="seconds">00</span> -
+                </time>
+            </div>
+        </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/Submit.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/Particles.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/TimeDisplay.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/MouseMovementParallax.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/BorderPositionInit.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='js/GradientTransition.js') }}" defer></script>
+</body>
+</html>

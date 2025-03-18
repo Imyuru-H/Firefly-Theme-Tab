@@ -1,0 +1,291 @@
+/* 设置页面基本样式 */
+body, html {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    overflow: visible; /* 允许页面内容溢出 */
+    font-family: Arial, sans-serif;
+    user-select: none;
+    text-align: center; /* 居中 */
+}
+
+/* 视频背景容器 */
+.video-background {
+    position: absolute;
+    /* transform: translate(-50%, -50%); */
+    width: 100%;
+    height: 100%; /* 将视频放在最底层 */
+    overflow: visible; /* 允许视频溢出 */
+    background-attachment: fixed; /* 背景固定 */
+}
+
+/* 视频样式 */
+#bg-video {
+    min-width: 110%;
+    min-height: 110%;
+    width: auto;
+    height: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    object-fit: cover; /* 确保视频覆盖整个背景 */
+}
+
+/* 内容样式 */
+.content {
+    left: 0vw;
+    top: 0vh;
+    position: relative;
+    z-index: 1; /* 将内容放在视频上方 */
+    text-align: center !important; /* 居中 */
+    color: white;
+    padding-top: 20%;
+    border-radius: 10px; /* 圆角 */
+    margin: 20px; /* 外边距 */
+    min-width: 100vw;
+}
+
+body {
+    margin: 0;
+    overflow: hidden;
+}
+
+@media screen and (min-width: 1280px) {
+    h1 {
+        font-size: 2.75rem;
+        margin-bottom: 2rem;
+        min-width: 100vw;
+        overflow: visible;
+        text-align: center;
+        min-width: 100%;
+        letter-spacing: -3px;
+    }
+
+    p {
+        font-family: 'SF Font', sans-serif; /* 使用自定义字体 */
+        font-size: 1.5rem;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+
+    #time {
+        font-size: 1.25rem;
+    }
+}
+
+@media screen and (min-width: 1920px) {
+    h1 {
+        font-size: 3.5rem;
+        margin-bottom: 2rem;
+        min-width: 100vw;
+        overflow: visible;
+        text-align: center;
+        min-width: 100%;
+    }
+
+    p {
+        font-family: 'SF Font', sans-serif; /* 使用自定义字体 */
+        font-size: 2rem;
+        letter-spacing: 1px;
+        white-space: nowrap;
+    }
+
+    #time {
+        font-size: 1.5rem;
+    }
+}
+
+#text{
+    position: relative;
+}
+
+/* 边框定位的核心代码 */
+#border {
+    position: relative;
+    max-width: 100vw;
+    margin: 20px auto;
+    min-height: 0px; /* 确保最小高度 */
+}
+
+#border_left,
+#border_right {
+    position: sticky;
+    width: 120px; /* 固定基准尺寸 */
+    filter: drop-shadow(0 0 5px rgba(255,255,255,0.3));
+}
+
+#border_left {
+    left: 0;
+    top: 0;
+}
+
+#border_right {
+
+    right: 0;
+    bottom: 0;
+}
+
+/* 字体样式 */
+@font-face {
+    font-family: 'SF Font'; /* 字体名称 */
+    src: url('../fonts/genesix.ttf') format('truetype'); /* 字体路径和格式 */
+}
+
+#title {
+    background: linear-gradient(270deg, #80F3E6, #EDF0A6, #D79024);
+    background-clip: text; /* 背景裁剪到文字 */
+    -webkit-background-clip: text; /* 背景裁剪到文字 */
+    -webkit-text-fill-color: transparent; /* 文字填充颜色设置为透明 */
+}
+
+.ref {
+    background: linear-gradient(90deg, #80F3E6, #EDF0A6, #D79024);
+    background-clip: text; /* 背景裁剪到文字 */
+    -webkit-background-clip: text; /* 背景裁剪到文字 */
+    -webkit-text-fill-color: transparent; /* 文字填充颜色设置为透明 */
+    font-family: 'SF Font', sans-serif; /* 使用自定义字体 */
+}
+
+#pairicles {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 2;
+}
+
+#time {
+    text-align: center;
+    background: linear-gradient(90deg, #80F3E6, #EDF0A6, #D79024);
+    background-clip: text; /* 背景裁剪到文字 */
+    -webkit-background-clip: text; /* 背景裁剪到文字 */
+    -webkit-text-fill-color: transparent; /* 文字填充颜色设置为透明 */
+    font-family: 'SF Font', sans-serif; /* 使用自定义字体 */
+    padding-top: 1rem;
+}
+
+#searching {
+    text-align: center;
+    position: absolute;
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    justify-content: center; /* 水平居中 */
+    z-index: 114514;
+    margin-top: 15%;
+    width: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+}
+
+#icon {
+    display: inline;
+    margin-left: 20px;
+    width: 20px;
+    height: 20px;
+}
+
+#separator {
+    display: inline;
+    width: 0px;
+    height: 25px;
+    margin: auto 0;
+    font-size: 150%;
+    border-right: 1px solid white;
+}
+
+#input {
+    width: 50%;
+    height: 40px;
+    margin: auto;
+    display: flex;
+    align-items: center; /* 垂直居中 */
+    gap: 8px; /* 元素之间的间距 */
+    /* 确保过渡属性有明确限定 */
+    transition: background 0.3s ease-in-out; 
+    /* 添加初始状态声明 */
+    background: hsl(0, 0%, 29%);
+    border-radius: 20px;
+    transition: all 0.3s cubic-bezier(0.43, 1.33, 0.87, 0.97);
+}
+
+#input:hover {
+    box-shadow: 0px 0px 5px 3px #a8f3eaad;
+}
+
+/* 通用选择器：所有input的placeholder */
+::placeholder {
+    color: #cecece;
+    opacity: 1;
+}
+
+#question {
+    max-width: 100%;
+    color: white;
+    flex-grow: 1; /* 让输入框占据剩余空间 */
+    z-index: 1919810;
+}
+
+#submit {
+    width: 80px;
+    height: 40px;
+    color: white;
+    border-radius: 0px 20px 20px 0px;
+    background-color: transparent;
+    border-left: 1px solid white;
+    transition: all 0.3s cubic-bezier(0.43, 1.33, 0.87, 0.97),
+                font-size 0.3s cubic-bezier(0.63, 1.60, 0.81, 1.02);
+    border: none;
+    outline: none;
+    cursor: pointer;
+}
+
+/* 蒙版特效 */
+#submit:hover::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    width: 100%;
+    background: rgba(255,255,255,0.7);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    border-radius: inherit;
+}
+
+@keyframes flowing-stripe {
+    0% { background-position: 100% 0; }
+    100% { background-position: -100% 0; }
+}
+  
+#submit.disabled {
+    background-image: linear-gradient(
+      45deg,
+      rgba(255,255,255,0.2) 25%,
+      transparent 25% 50%,
+      rgba(255,255,255,0.2) 50% 75%,
+      transparent 75%
+    );
+    background-size: 40px 40px; /* 增大条纹尺寸 */
+    animation: flowing-stripe 1s linear infinite;
+}
+
+.submit_icon {
+    font-size: 100%;
+}
+
+@supports (background: color-mix(in srgb, white, white)) {
+    /* 原生颜色混合支持 */
+}
+
+input,button {
+    width: 100%;
+    height: 40px;
+    background: transparent;
+}
+
+input {
+    border: none;
+    outline: none;
+}

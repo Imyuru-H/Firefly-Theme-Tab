@@ -134,7 +134,8 @@ if __name__ == "__main__":
     total_time = time.time() - start_time
     if not ERROR_PAGES == []:
         Logs.error(f"== False pages ==")
-        Logs.error(ERROR_PAGES)
+        for e in ERROR_PAGES:
+            Logs.error(e)
     Logs.info(f"== Complete ==")
     Logs.info(f"Total page count: {len(TARGET_PAGES)}")
     Logs.info(f"Success page count: {success_count}")

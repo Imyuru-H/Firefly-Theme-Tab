@@ -16,6 +16,7 @@ try:
     from flask import *
     import logging
     from werkzeug.serving import WSGIRequestHandler
+    import yaml
 except ImportError:
     import init
     import requests
@@ -23,6 +24,7 @@ except ImportError:
     from flask import *
     import logging
     from werkzeug.serving import WSGIRequestHandler
+    import yaml
 
 from log import *
 import tips
@@ -58,6 +60,13 @@ handler.addFilter(StatusCodeFilter(exclude_codes=[200, 304]))  # 过滤200和304
 werkzeug_log.addHandler(handler)
 Logs.info("Werkzeug log filter config over.")
 
+bg = lambda x,y : x if os.path.exists(f"/static/background/{x}") else y
+DEFAUT_BG_PATH = "background.jpg"
+
+# 读取配置信息
+with open("settings.yml") as settings:
+    settings = yaml.load(settings, Loader=yaml.FullLoader)
+BG_PATH = bg(settings['background'], DEFAUT_BG_PATH)
 
 @app.route('/')
 def index():
@@ -66,7 +75,8 @@ def index():
     # 配置tips
     is_empty = lambda x,y: y if x==None else tips.errors[session['error']]
     kwargs = {
-        "tip" : is_empty(session['error'], random.choice(tips.tips))
+        "tip" : is_empty(session['error'], random.choice(tips.tips)),
+        "background" : f"/static/background/{BG_PATH}"
     }
     session['error'] = None
     

@@ -10,6 +10,7 @@ requests
 pandas
 flask
 werkzeug
+pyyaml
 
 # crawler.py
 beautifulsoup4

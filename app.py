@@ -10,24 +10,19 @@ from datetime import datetime
 import random
 from urllib.parse import quote
 
-try:
-    import requests
-    import pandas as pd
-    from flask import *
-    import logging
-    from werkzeug.serving import WSGIRequestHandler
-    import yaml
-except ImportError:
-    import init
-    import requests
-    import pandas as pd
-    from flask import *
-    import logging
-    from werkzeug.serving import WSGIRequestHandler
-    import yaml
+import init
+import requests
+import pandas as pd
+from flask import *
+import logging
+from werkzeug.serving import WSGIRequestHandler
+from werkzeug.exceptions import NotFound
+import yaml
+
 
 from log import *
 import tips
+import crawler
 
 
 # 创建日志类
@@ -41,6 +36,7 @@ Logs.info("Flask app init over.")
 session = {
     'error' : None
 }
+
 
 # 防止日志刷屏
 class StatusCodeFilter(logging.Filter):
@@ -60,14 +56,18 @@ handler.addFilter(StatusCodeFilter(exclude_codes=[200, 304]))  # 过滤200和304
 werkzeug_log.addHandler(handler)
 Logs.info("Werkzeug log filter config over.")
 
-bg = lambda x,y : x if os.path.exists(f"/static/background/{x}") else y
-DEFAUT_BG_PATH = "background.jpg"
+
+# 先判断背景地址类型是否为url, 如果是, 则直接返回url, 如果不是, 判断地址对应的文件是否存在, 若存在, 则返回完整相对地址, 若不存在, 则返回默认背景的完整相对地址 
+DEFAUT_BG_PATH = "background.png"
+bg = lambda path_type,path : path if path_type == 'url' else path if os.path.exists(f"/static/background/{path}") else f"/static/background/{DEFAUT_BG_PATH}"
 
 # 读取配置信息
 with open("settings.yml") as settings:
     settings = yaml.load(settings, Loader=yaml.FullLoader)
-BG_PATH = bg(settings['background'], DEFAUT_BG_PATH)
+BG_PATH = bg(settings['background_type'], settings['background'])
 
+
+# 配置Flask app
 @app.route('/')
 def index():
     global session
@@ -112,7 +112,7 @@ def favicon():
 def error400(e):
     global session
     session['error'] = 400
-    return redirect(url_for('index')), Logs.error("Error 400: Bad Request, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 400: Bad Request, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/400test')
 def error400test():
@@ -122,7 +122,7 @@ def error400test():
 def error401(e):
     global session
     session['error'] = 401
-    return redirect(url_for('index')), Logs.error("Error 401: Unauthorized, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 401: Unauthorized, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/401test')
 def error401test():
@@ -132,7 +132,7 @@ def error401test():
 def error403(e):
     global session
     session['error'] = 403
-    return redirect(url_for('index')), Logs.error("Error 403: Forbidden, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 403: Forbidden, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/403test')
 def error403test():
@@ -142,7 +142,7 @@ def error403test():
 def error404(e):
     global session
     session['error'] = 404
-    return redirect(url_for('index')), Logs.error("Error 404: Not Found, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 404: Not Found, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/404test')
 def error404test():
@@ -152,7 +152,7 @@ def error404test():
 def error405(e):
     global session
     session['error'] = 405
-    return redirect(url_for('index')), Logs.error("Error 405: Method Not Allowed, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 405: Method Not Allowed, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/405test')
 def error405test():
@@ -162,7 +162,7 @@ def error405test():
 def error500(e):
     global session
     session['error'] = 500
-    return redirect(url_for('index')), Logs.error("Error 500: Internal Server Error, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 500: Internal Server Error, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/500test')
 def error500test():
@@ -172,7 +172,7 @@ def error500test():
 def error501(e):
     global session
     session['error'] = 501
-    return redirect(url_for('index')), Logs.error("Error 501: Not Implemented, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 501: Not Implemented, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/501test')
 def error501test():
@@ -182,7 +182,7 @@ def error501test():
 def error502(e):
     global session
     session['error'] = 502
-    return redirect(url_for('index')), Logs.error("Error 502: Bad Gateway, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 502: Bad Gateway, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/502test')
 def error502test():
@@ -192,7 +192,7 @@ def error502test():
 def error503(e):
     global session
     session['error'] = 503
-    return redirect(url_for('index')), Logs.error("Error 503: Service Unavailable, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 503: Service Unavailable, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/503test')
 def error503test():
@@ -202,7 +202,7 @@ def error503test():
 def error504(e):
     global session
     session['error'] = 504
-    return redirect(url_for('index')), Logs.error("Error 504: Gateway Time-out, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 504: Gateway Time-out, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/504test')
 def error504est():
@@ -212,7 +212,7 @@ def error504est():
 def error505(e):
     global session
     session['error'] = 505
-    return redirect(url_for('index')), Logs.error("Error 505: HTTP Version not supported, redirected to Firefly.html...")
+    return redirect(url_for('index')), Logs.error("Error 505: HTTP Version not supported, redirected to Firefly.html..."), Logs.error(e.description)
 
 @app.route('/505test')
 def error505test():

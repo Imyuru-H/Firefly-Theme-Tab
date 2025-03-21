@@ -1,7 +1,0 @@
-import os
-
-
-bg = lambda path_type,path : path if path_type == 'url' else path if os.path.exists(f"/static/background/{path}") else f"/static/background/{DEFAUT_BG_PATH}"
-DEFAUT_BG_PATH = "background.png"
-
-print(bg('url','https://www.nima.com'))

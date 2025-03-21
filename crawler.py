@@ -17,8 +17,8 @@ import log
 QUERY = "人工智能"                   # 搜索关键词
 TARGET_PAGES = range(1,51)          # 指定爬取页数列表
 RESULTS_PER_PAGE = 10               # 每页结果数 (Bing默认10)
-MAX_WORKERS = 5                     # 并发线程数
-CSV_FILE = 'crawl_results.csv'       # 输出文件名
+MAX_WORKERS = 100                   # 并发线程数
+CSV_FILE = 'crawl_results.csv'      # 输出文件名
 RETRY_TIMES = 2                     # 单页最大重试次数
 REQUEST_TIMEOUT = 10                # 请求超时时间（秒）
 ERROR_PAGES = []                    # 错误页列表
@@ -93,12 +93,11 @@ scraper = BingScraper()
 scraper.init_csv()
     
 start_time = time.time()
-success_count = 0
 
 def scrape_page(query:str,
                 tgt_pages:list=range(1,11),
                 max_trds_cnt=5):
-    global success_count
+    success_count = 0
     
     with ThreadPoolExecutor(max_workers=max_trds_cnt) as executor:
         # 创建进度条
@@ -125,11 +124,11 @@ def scrape_page(query:str,
     
     csv_data = pd.read_csv(CSV_FILE)
     
-    return csv_data
+    return csv_data, success_count
 
 # ================= 执行入口 =================
 if __name__ == "__main__":
-    res = scrape_page(QUERY, TARGET_PAGES, MAX_WORKERS)
+    res, success_cnt = scrape_page(QUERY, TARGET_PAGES, MAX_WORKERS)
     # 输出统计信息
     total_time = time.time() - start_time
     if not ERROR_PAGES == []:
@@ -138,9 +137,9 @@ if __name__ == "__main__":
             Logs.error(e)
     Logs.info(f"== Complete ==")
     Logs.info(f"Total page count: {len(TARGET_PAGES)}")
-    Logs.info(f"Success page count: {success_count}")
+    Logs.info(f"Success page count: {success_cnt}")
     Logs.info(f"False page count: {len(ERROR_PAGES)}")
     Logs.info(f"Total entry count: {len(res)}")
-    Logs.info(f"Success rate: {success_count/len(TARGET_PAGES):.1%}")
+    Logs.info(f"Success rate: {success_cnt/len(TARGET_PAGES):.1%}")
     Logs.info(f"Total duration: {total_time:.2f} seconds")
     Logs.info(f"Average speed: {total_time/len(TARGET_PAGES):.2f} seconds per page")

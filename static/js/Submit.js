@@ -30,7 +30,7 @@ function sendData() {
     .then(response => response.json())
     .then(data => {
         console.log('后端说:', data);
-        window.location.replace(data['url']);
+        // window.location.replace(data['url']);
     })
     .catch(error => {
         console.error('传输出错:', error);

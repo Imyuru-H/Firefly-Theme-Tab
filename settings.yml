@@ -1,2 +1,4 @@
 background-type : local
 background : background.png
+
+crawler_max_wkrs_cnt : 5

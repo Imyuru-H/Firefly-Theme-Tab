@@ -65,6 +65,7 @@ bg = lambda path_type,path : path if path_type == 'url' else path if os.path.exi
 with open("settings.yml") as settings:
     settings = yaml.load(settings, Loader=yaml.FullLoader)
 BG_PATH = bg(settings['background_type'], settings['background'])
+CRAWLER_MAX_WKRS = settings['crawler_max_wkrs_cnt']
 
 
 # 配置Flask app
@@ -86,7 +87,27 @@ def index():
 @app.route('/search<string:question>')
 def search(question):
     url = f"https://cn.bing.com/search?q={quote(question)}"
-    Logs.info(f"Url: {url}")
+
+    TARGET_PAGES = range(1,51)
+
+    res, success_cnt = crawler.scrape_page(question, TARGET_PAGES, CRAWLER_MAX_WKRS)
+
+    # 输出统计信息
+    ERROR_PAGES = []
+    total_time = time.time() - start_time
+    if not ERROR_PAGES == []:
+        Logs.error(f"== False pages ==")
+        for e in ERROR_PAGES:
+            Logs.error(e)
+    Logs.info(f"== Complete ==")
+    Logs.info(f"Total page count: {len(TARGET_PAGES)}")
+    Logs.info(f"Success page count: {success_cnt}")
+    Logs.info(f"False page count: {len(ERROR_PAGES)}")
+    Logs.info(f"Total entry count: {len(res)}")
+    Logs.info(f"Success rate: {success_cnt/len(TARGET_PAGES):.1%}")
+    Logs.info(f"Total duration: {total_time:.2f} seconds")
+    Logs.info(f"Average speed: {total_time/len(TARGET_PAGES):.2f} seconds per page")
+
     # 发送请求
     return jsonify({'url':url})
 

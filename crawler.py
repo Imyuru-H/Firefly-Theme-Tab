@@ -17,9 +17,9 @@ import log
 QUERY = "人工智能"                   # 搜索关键词
 TARGET_PAGES = range(1,51)          # 指定爬取页数列表
 RESULTS_PER_PAGE = 10               # 每页结果数 (Bing默认10)
-MAX_WORKERS = 100                   # 并发线程数
+MAX_WORKERS = 10                    # 并发线程数
 CSV_FILE = 'crawl_results.csv'      # 输出文件名
-RETRY_TIMES = 2                     # 单页最大重试次数
+RETRY_TIMES = 100                   # 单页最大重试次数
 REQUEST_TIMEOUT = 10                # 请求超时时间（秒）
 ERROR_PAGES = []                    # 错误页列表
 
